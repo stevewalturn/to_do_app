@@ -4,6 +4,8 @@ import 'package:to_do_app/app/app.locator.dart';
 import 'package:to_do_app/models/todo_item.dart';
 import 'package:to_do_app/services/todo_service.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:to_do_app/enums/dialog_type.dart';
+import 'package:to_do_app/enums/bottom_sheet_type.dart';
 
 class HomeViewModel extends BaseViewModel {
   final _todoService = locator<TodoService>();
@@ -23,7 +25,7 @@ class HomeViewModel extends BaseViewModel {
           response?.data != null &&
           response?.data is Map) {
         final data = response!.data as Map;
-        await _todoService.addTodo(
+        _todoService.addTodo(
           data['title'] as String,
           data['description'] as String,
         );
@@ -45,13 +47,15 @@ class HomeViewModel extends BaseViewModel {
       if (response?.confirmed == true) {
         switch (response?.data) {
           case 'delete':
-            await _todoService.deleteTodo(todo.id);
+            _todoService.deleteTodo(todo.id);
             break;
           case 'toggle':
-            await _todoService.toggleTodoCompletion(todo.id);
+            _todoService.toggleTodoCompletion(todo.id);
             break;
           case 'edit':
             await _editTodo(todo);
+            break;
+          default:
             break;
         }
         notifyListeners();
@@ -73,7 +77,7 @@ class HomeViewModel extends BaseViewModel {
           response?.data != null &&
           response?.data is Map) {
         final data = response!.data as Map;
-        await _todoService.editTodo(
+        _todoService.editTodo(
           todo.id,
           data['title'] as String,
           data['description'] as String,
